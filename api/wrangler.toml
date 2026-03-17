@@ -28,6 +28,25 @@ id = "0688214ea0aa45b481825a4964106793"
 [dev]
 port = 8787
 
+# ─── Production environment ───────────────────────────────────────────────────
+# Deploy with: npx wrangler deploy --env production
+[env.production]
+name = "ib-companion-api"
+vars = { ENVIRONMENT = "production", FREE_PLAN_DAILY_LIMIT = "10", PRO_PLAN_MONTHLY_PRICE = "8" }
+# JWT_SECRET: npx wrangler secret put JWT_SECRET --env production
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "ib-companion-db"
+database_id = "2031f7fc-78e2-4e22-b6ad-30bf3ce265b1"
+
+[env.production.ai]
+binding = "AI"
+
+[[env.production.kv_namespaces]]
+binding = "KV"
+id = "0688214ea0aa45b481825a4964106793"
+
 # Preview (staging) environment
 [env.preview]
 name = "ib-companion-api-preview"
