@@ -22,6 +22,7 @@ app.use('*', cors({
   origin: (origin) => {
     const allowed = [
       'http://localhost:3000',
+      'https://my-pwa-apps.github.io',
       'https://ib-companion.pages.dev',
       'https://ibcompanion.app',
     ]
