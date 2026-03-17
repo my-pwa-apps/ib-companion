@@ -1,0 +1,34 @@
+name = "ib-companion-api"
+main = "src/index.ts"
+compatibility_date = "2024-10-22"
+compatibility_flags = ["nodejs_compat"]
+account_id = "bb3893fab785508c512caa687c340bda"
+
+[vars]
+ENVIRONMENT = "development"
+FREE_PLAN_DAILY_LIMIT = "10"
+PRO_PLAN_MONTHLY_PRICE = "8"
+# JWT_SECRET is set via: wrangler secret put JWT_SECRET
+
+# Cloudflare D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "ib-companion-db"
+database_id = "2031f7fc-78e2-4e22-b6ad-30bf3ce265b1"
+
+# Cloudflare Workers AI
+[ai]
+binding = "AI"
+
+# KV for rate limiting & session tokens
+[[kv_namespaces]]
+binding = "KV"
+id = "0688214ea0aa45b481825a4964106793"
+
+[dev]
+port = 8787
+
+# Preview (staging) environment
+[env.preview]
+name = "ib-companion-api-preview"
+vars = { ENVIRONMENT = "preview", FREE_PLAN_DAILY_LIMIT = "50" }
