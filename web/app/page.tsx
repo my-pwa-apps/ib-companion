@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import {
   BookOpen, Brain, MessageSquare, Mic, FlaskConical,
-  CheckCircle, ArrowRight, Star, Zap, Shield
+  CheckCircle, ArrowRight, Star, Zap, Shield, Sparkles
 } from 'lucide-react'
 
 const FEATURES = [
@@ -9,31 +9,31 @@ const FEATURES = [
     icon: MessageSquare,
     title: 'Question Helper',
     description: 'Paste any IB question and get a structured explanation, key concepts, command-term analysis, and a full answer outline.',
-    color: 'bg-violet-50 text-violet-600',
+    gradient: 'from-violet-500 to-purple-600',
   },
   {
     icon: BookOpen,
     title: 'Essay Feedback',
     description: 'Rubric-aligned feedback for TOK, EE, IA, and IO. Get criterion scores, strengths, weaknesses, and actionable improvements.',
-    color: 'bg-brand-50 text-brand-600',
+    gradient: 'from-brand-500 to-blue-600',
   },
   {
     icon: Brain,
     title: 'Study Mode',
     description: 'AI-generated flashcards with spaced repetition, topic quizzes, and concise revision summaries.',
-    color: 'bg-emerald-50 text-emerald-600',
+    gradient: 'from-emerald-500 to-teal-600',
   },
   {
     icon: Mic,
     title: 'Oral Practice',
     description: 'Simulate English IO, language orals, and presentations. The AI acts as examiner, asks follow-up questions, and evaluates your performance.',
-    color: 'bg-amber-50 text-amber-600',
+    gradient: 'from-amber-500 to-orange-600',
   },
   {
     icon: FlaskConical,
     title: 'IA Planner',
     description: 'Input your subject and topic — get research question suggestions, methodology options, data collection ideas, and a timeline.',
-    color: 'bg-rose-50 text-rose-600',
+    gradient: 'from-rose-500 to-pink-600',
   },
 ]
 
@@ -45,14 +45,19 @@ const TESTIMONIALS = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen relative overflow-hidden">
 
-      {/* Nav */}
-      <nav className="fixed top-0 inset-x-0 z-40 bg-white/80 backdrop-blur-md border-b border-surface-border">
+      {/* ── Nav ──────────────────────────────────────────────────────────────── */}
+      <nav className="fixed top-0 inset-x-0 z-40 bg-white/40 backdrop-blur-2xl border-b border-white/20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-          <span className="font-bold text-lg text-slate-900">
-            IB <span className="text-brand-500">Companion</span>
-          </span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center shadow-md shadow-brand-500/25">
+              <BookOpen size={16} className="text-white" />
+            </div>
+            <span className="font-bold text-lg text-slate-900">
+              IB <span className="bg-gradient-to-r from-brand-600 to-purple-600 bg-clip-text text-transparent">Companion</span>
+            </span>
+          </div>
           <div className="flex items-center gap-3">
             <Link href="/login" className="btn-ghost text-sm">Sign in</Link>
             <Link href="/register" className="btn-primary text-sm">Get started free</Link>
@@ -60,58 +65,70 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="pt-32 pb-20 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700 border border-brand-200 mb-6">
-            <Zap size={12} />
-            Powered by Cloudflare Workers AI
+      {/* ── Hero ─────────────────────────────────────────────────────────────── */}
+      <section className="mesh-bg relative pt-32 pb-24 px-4 sm:px-6">
+        {/* Floating orbs */}
+        <div className="orb w-[500px] h-[500px] bg-brand-400 -top-64 -left-64 animate-float-slow" />
+        <div className="orb w-[400px] h-[400px] bg-purple-400 -top-32 right-0 animate-float-slower" />
+        <div className="orb w-[300px] h-[300px] bg-pink-300 bottom-0 left-1/3 animate-float" />
+        <div className="orb w-[200px] h-[200px] bg-cyan-300 top-1/2 right-1/4 animate-float-slow" />
+
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="animate-slide-up">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-white/60 backdrop-blur-sm text-brand-700 border border-white/40 shadow-sm mb-8">
+              <Sparkles size={14} className="text-brand-500" />
+              Powered by Cloudflare Workers AI
+            </div>
+            <h1 className="text-5xl sm:text-7xl font-extrabold text-slate-900 leading-[1.1] mb-6 tracking-tight">
+              Your AI study partner
+              <br />
+              <span className="bg-gradient-to-r from-brand-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
+                for the IB Diploma
+              </span>
+            </h1>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+              Get structured help with TOK, Extended Essays, Internal Assessments, and exam revision.
+              Designed specifically for IB students aged 16–19.
+            </p>
           </div>
-          <h1 className="text-5xl sm:text-6xl font-bold text-slate-900 leading-tight mb-6">
-            Your AI study partner
-            <br />
-            <span className="text-brand-500">for the IB Diploma</span>
-          </h1>
-          <p className="text-xl text-slate-500 max-w-2xl mx-auto mb-10">
-            Get structured help with TOK, Extended Essays, Internal Assessments, and exam revision.
-            Designed specifically for IB students aged 16–19.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/register" className="btn-primary px-6 py-3 text-base w-full sm:w-auto">
-              Start for free <ArrowRight size={16} />
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up-delay">
+            <Link href="/register" className="btn-primary px-8 py-3.5 text-base w-full sm:w-auto shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/30">
+              Start for free <ArrowRight size={18} />
             </Link>
-            <Link href="/login" className="btn-secondary px-6 py-3 text-base w-full sm:w-auto">
+            <Link href="/login" className="btn-secondary px-8 py-3.5 text-base w-full sm:w-auto">
               Sign in
             </Link>
           </div>
-          <p className="text-sm text-slate-400 mt-4">Free plan · No credit card required · 10 AI queries/day</p>
+          <p className="text-sm text-slate-400 mt-6 font-medium">Free plan · No credit card required · 10 AI queries/day</p>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-20 px-4 sm:px-6 bg-surface-muted">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-slate-900 mb-3">Everything an IB student needs</h2>
-            <p className="text-slate-500 max-w-xl mx-auto">Five AI-powered tools working together to boost your IB performance.</p>
+      {/* ── Features ─────────────────────────────────────────────────────────── */}
+      <section className="py-24 px-4 sm:px-6 mesh-bg relative">
+        <div className="orb w-[300px] h-[300px] bg-brand-300 top-20 -right-32 animate-float-slower" />
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-extrabold text-slate-900 mb-4">Everything an IB student needs</h2>
+            <p className="text-lg text-slate-500 max-w-xl mx-auto">Five AI-powered tools working together to boost your IB performance.</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURES.map((feature) => (
-              <div key={feature.title} className="card hover:shadow-card-hover transition-shadow">
-                <div className={`inline-flex p-2.5 rounded-lg ${feature.color} mb-4`}>
-                  <feature.icon size={20} />
+              <div key={feature.title} className="glass p-6 group hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300">
+                <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg mb-5 transition-transform duration-300 group-hover:scale-110`}>
+                  <feature.icon size={22} className="text-white" />
                 </div>
-                <h3 className="font-semibold text-slate-900 mb-2">{feature.title}</h3>
+                <h3 className="font-bold text-slate-900 mb-2 text-lg">{feature.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{feature.description}</p>
               </div>
             ))}
-            {/* 6th card: AI Rubric */}
-            <div className="card hover:shadow-card-hover transition-shadow bg-gradient-to-br from-brand-500 to-violet-600 text-white border-0">
-              <div className="inline-flex p-2.5 rounded-lg bg-white/20 mb-4">
-                <Shield size={20} />
+            {/* 6th card: AI Rubric — dark glass */}
+            <div className="glass-dark p-6 text-white group hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300">
+              <div className="inline-flex p-3 rounded-xl bg-white/20 backdrop-blur-sm mb-5 transition-transform duration-300 group-hover:scale-110">
+                <Shield size={22} />
               </div>
-              <h3 className="font-semibold mb-2">Rubric-Aligned Scoring</h3>
-              <p className="text-sm text-white/80 leading-relaxed">
+              <h3 className="font-bold mb-2 text-lg">Rubric-Aligned Scoring</h3>
+              <p className="text-sm text-white/70 leading-relaxed">
                 Every essay analysis maps directly to official IB criteria — TOK (A/B/C), EE (A–E), IA per subject — so feedback is always exam-relevant.
               </p>
             </div>
@@ -119,56 +136,59 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Example Feedback */}
-      <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      {/* ── Example Feedback ──────────────────────────────────────────────────── */}
+      <section className="py-24 px-4 sm:px-6 relative">
+        <div className="orb w-[400px] h-[400px] bg-purple-300 -bottom-32 -left-32 animate-float" />
+        <div className="max-w-5xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">Examiner-quality feedback, instantly</h2>
-              <p className="text-slate-500 mb-6">
+              <h2 className="text-4xl font-extrabold text-slate-900 mb-5">Examiner-quality feedback, instantly</h2>
+              <p className="text-lg text-slate-500 mb-8 leading-relaxed">
                 Our AI is trained on IB rubrics and gives the kind of specific, actionable feedback that examiners provide — not generic suggestions.
               </p>
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 {[
                   'Criterion-by-criterion scoring',
                   'Quote-referenced strengths and weaknesses',
                   'Prioritised improvement suggestions',
                   'Grade band estimation',
                 ].map(item => (
-                  <li key={item} className="flex items-center gap-2.5 text-sm text-slate-700">
-                    <CheckCircle size={16} className="text-emerald-500 flex-shrink-0" />
+                  <li key={item} className="flex items-center gap-3 text-sm font-medium text-slate-700">
+                    <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-sm shadow-emerald-500/20 flex-shrink-0">
+                      <CheckCircle size={14} className="text-white" />
+                    </div>
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
-            {/* Mock feedback card */}
-            <div className="card shadow-card-hover">
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-semibold text-slate-900">TOK Essay Feedback</span>
+            {/* Mock feedback card — glass */}
+            <div className="glass p-6 shadow-float">
+              <div className="flex items-center justify-between mb-5">
+                <span className="font-bold text-slate-900 text-lg">TOK Essay Feedback</span>
                 <span className="badge-amber">Score: 22/30</span>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {[
                   { label: 'Criterion A: Knowledge Questions', score: 7, max: 10 },
                   { label: 'Criterion B: Quality of Analysis', score: 8, max: 10 },
                   { label: 'Criterion C: Examples & Case Studies', score: 7, max: 10 },
                 ].map(c => (
                   <div key={c.label}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-600">{c.label}</span>
-                      <span className="font-medium text-slate-800">{c.score}/{c.max}</span>
+                    <div className="flex justify-between text-xs mb-1.5">
+                      <span className="text-slate-600 font-medium">{c.label}</span>
+                      <span className="font-bold text-slate-800">{c.score}/{c.max}</span>
                     </div>
-                    <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-white/60 rounded-full overflow-hidden backdrop-blur-sm">
                       <div
-                        className="h-full bg-brand-400 rounded-full"
+                        className="h-full bg-gradient-to-r from-brand-400 to-brand-600 rounded-full transition-all duration-700"
                         style={{ width: `${(c.score / c.max) * 100}%` }}
                       />
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 p-3 bg-amber-50 border border-amber-100 rounded-lg text-xs text-amber-800">
+              <div className="mt-5 p-4 bg-amber-50/80 backdrop-blur-sm border border-amber-200/30 rounded-xl text-xs text-amber-800">
                 <strong>Key suggestion:</strong> Your knowledge question is relevant but needs sharper focus.
                 Consider specifying the area of knowledge and refining the scope to one concept.
               </div>
@@ -177,21 +197,22 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 px-4 sm:px-6 bg-surface-muted">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-slate-900 text-center mb-12">IB students love it</h2>
+      {/* ── Testimonials ──────────────────────────────────────────────────────── */}
+      <section className="py-24 px-4 sm:px-6 mesh-bg relative">
+        <div className="orb w-[250px] h-[250px] bg-amber-300 top-10 right-10 animate-float-slow" />
+        <div className="max-w-5xl mx-auto relative z-10">
+          <h2 className="text-4xl font-extrabold text-slate-900 text-center mb-14">IB students love it</h2>
           <div className="grid sm:grid-cols-3 gap-6">
             {TESTIMONIALS.map(t => (
-              <div key={t.name} className="card">
-                <div className="flex gap-0.5 mb-3">
+              <div key={t.name} className="glass p-6 group hover:-translate-y-1 transition-all duration-300">
+                <div className="flex gap-0.5 mb-4">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} size={14} className="text-amber-400 fill-amber-400" />
+                    <Star key={i} size={16} className="text-amber-400 fill-amber-400 drop-shadow-sm" />
                   ))}
                 </div>
-                <p className="text-sm text-slate-600 italic mb-4">&ldquo;{t.text}&rdquo;</p>
+                <p className="text-sm text-slate-600 italic mb-5 leading-relaxed">&ldquo;{t.text}&rdquo;</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-slate-900">{t.name}</span>
+                  <span className="text-sm font-bold text-slate-900">{t.name}</span>
                   <span className="badge-green text-xs">{t.score}</span>
                 </div>
               </div>
@@ -200,38 +221,39 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">Simple pricing</h2>
-          <p className="text-slate-500 mb-12">Start free. Upgrade when you need more.</p>
-          <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+      {/* ── Pricing ───────────────────────────────────────────────────────────── */}
+      <section className="py-24 px-4 sm:px-6 relative">
+        <div className="orb w-[350px] h-[350px] bg-brand-300 -bottom-40 left-1/4 animate-float-slower" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl font-extrabold text-slate-900 mb-4">Simple pricing</h2>
+          <p className="text-lg text-slate-500 mb-14">Start free. Upgrade when you need more.</p>
+          <div className="grid sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
             {/* Free */}
-            <div className="card text-left">
-              <div className="mb-4">
-                <span className="text-2xl font-bold text-slate-900">Free</span>
-                <p className="text-sm text-slate-500 mt-1">10 AI queries per day</p>
+            <div className="glass p-7 text-left hover:-translate-y-1 transition-all duration-300">
+              <div className="mb-5">
+                <span className="text-3xl font-extrabold text-slate-900">Free</span>
+                <p className="text-sm text-slate-500 mt-1 font-medium">10 AI queries per day</p>
               </div>
-              <ul className="space-y-2.5 mb-6 text-sm text-slate-600">
+              <ul className="space-y-3 mb-7 text-sm text-slate-600">
                 {['Question helper', 'Essay feedback (1/day)', 'Flashcard generation', 'IA planner (1/day)'].map(f => (
-                  <li key={f} className="flex items-center gap-2">
-                    <CheckCircle size={14} className="text-emerald-500" /> {f}
+                  <li key={f} className="flex items-center gap-2.5">
+                    <CheckCircle size={15} className="text-emerald-500 flex-shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
               <Link href="/register" className="btn-secondary w-full justify-center">Get started free</Link>
             </div>
             {/* Pro */}
-            <div className="card text-left border-2 border-brand-400 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="badge-blue text-xs font-semibold px-3 py-1">Most popular</span>
+            <div className="relative glass p-7 text-left border-2 border-brand-400/50 hover:-translate-y-1 transition-all duration-300 shadow-glow">
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                <span className="badge-blue text-xs font-bold px-4 py-1.5 shadow-sm">Most popular</span>
               </div>
-              <div className="mb-4">
-                <span className="text-2xl font-bold text-slate-900">€8</span>
-                <span className="text-slate-400 text-sm">/month</span>
-                <p className="text-sm text-slate-500 mt-1">Unlimited AI queries</p>
+              <div className="mb-5">
+                <span className="text-3xl font-extrabold text-slate-900">€8</span>
+                <span className="text-slate-400 text-sm font-medium">/month</span>
+                <p className="text-sm text-slate-500 mt-1 font-medium">Unlimited AI queries</p>
               </div>
-              <ul className="space-y-2.5 mb-6 text-sm text-slate-600">
+              <ul className="space-y-3 mb-7 text-sm text-slate-600">
                 {[
                   'Everything in Free',
                   'Unlimited essay feedback',
@@ -240,8 +262,8 @@ export default function LandingPage() {
                   'Advanced IA planning',
                   'Priority AI responses',
                 ].map(f => (
-                  <li key={f} className="flex items-center gap-2">
-                    <CheckCircle size={14} className="text-brand-500" /> {f}
+                  <li key={f} className="flex items-center gap-2.5">
+                    <CheckCircle size={15} className="text-brand-500 flex-shrink-0" /> {f}
                   </li>
                 ))}
               </ul>
@@ -251,14 +273,27 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-surface-border py-10 px-4">
+      {/* ── CTA ───────────────────────────────────────────────────────────────── */}
+      <section className="py-24 px-4 sm:px-6 mesh-bg-dark relative overflow-hidden">
+        <div className="orb w-[400px] h-[400px] bg-brand-500 opacity-20 -top-32 left-1/4 animate-float-slow" />
+        <div className="orb w-[300px] h-[300px] bg-purple-500 opacity-20 bottom-0 right-1/4 animate-float" />
+        <div className="max-w-3xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-6">Ready to ace the IB?</h2>
+          <p className="text-lg text-white/60 mb-10">Join thousands of IB students getting smarter, faster.</p>
+          <Link href="/register" className="btn-primary px-10 py-4 text-lg shadow-xl shadow-brand-500/30 hover:shadow-2xl hover:shadow-brand-500/40">
+            Get started for free <ArrowRight size={20} />
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Footer ────────────────────────────────────────────────────────────── */}
+      <footer className="border-t border-white/20 py-10 px-4 bg-white/30 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-          <span>© 2026 IB Companion. Built for IB students worldwide.</span>
+          <span className="font-medium">© 2026 IB Companion. Built for IB students worldwide.</span>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-slate-600 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-slate-600 transition-colors">Terms</a>
-            <a href="mailto:hello@ibcompanion.app" className="hover:text-slate-600 transition-colors">Contact</a>
+            <a href="#" className="hover:text-slate-600 transition-colors font-medium">Privacy</a>
+            <a href="#" className="hover:text-slate-600 transition-colors font-medium">Terms</a>
+            <a href="mailto:hello@ibcompanion.app" className="hover:text-slate-600 transition-colors font-medium">Contact</a>
           </div>
         </div>
       </footer>

@@ -11,11 +11,11 @@ import type { User, UserStats } from '@/lib/types'
 import { cn, formatDate, scoreColor } from '@/lib/utils'
 
 const QUICK_ACTIONS = [
-  { href: '/essays/analyze', label: 'Analyze Essay',   icon: BookOpen,    color: 'bg-brand-50 text-brand-600 hover:bg-brand-100' },
-  { href: '/questions',      label: 'Get Help',         icon: MessageSquare, color: 'bg-violet-50 text-violet-600 hover:bg-violet-100' },
-  { href: '/flashcards',     label: 'Study Cards',      icon: Brain,       color: 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' },
-  { href: '/practice',       label: 'Practice Oral',    icon: Mic,         color: 'bg-amber-50 text-amber-600 hover:bg-amber-100' },
-  { href: '/ia-planner',     label: 'Plan IA',          icon: FlaskConical, color: 'bg-rose-50 text-rose-600 hover:bg-rose-100' },
+  { href: '/essays/analyze', label: 'Analyze Essay',   icon: BookOpen,    gradient: 'from-brand-500 to-blue-600',    glow: 'shadow-brand-500/20' },
+  { href: '/questions',      label: 'Get Help',         icon: MessageSquare, gradient: 'from-violet-500 to-purple-600', glow: 'shadow-violet-500/20' },
+  { href: '/flashcards',     label: 'Study Cards',      icon: Brain,       gradient: 'from-emerald-500 to-teal-600',  glow: 'shadow-emerald-500/20' },
+  { href: '/practice',       label: 'Practice Oral',    icon: Mic,         gradient: 'from-amber-500 to-orange-600',  glow: 'shadow-amber-500/20' },
+  { href: '/ia-planner',     label: 'Plan IA',          icon: FlaskConical, gradient: 'from-rose-500 to-pink-600',    glow: 'shadow-rose-500/20' },
 ]
 
 export default function DashboardPage() {
@@ -38,10 +38,10 @@ export default function DashboardPage() {
   const pct = queriesUsed !== null ? Math.min((queriesUsed / queryLimit) * 100, 100) : 0
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className="p-6 max-w-5xl mx-auto space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">
+      <div>
+        <h1 className="text-3xl font-bold text-slate-900">
           {userData ? `Hey, ${userData.name.split(' ')[0]} 👋` : 'Dashboard'}
         </h1>
         <p className="text-slate-500 mt-1">What would you like to work on today?</p>
@@ -49,64 +49,74 @@ export default function DashboardPage() {
 
       {/* Plan banner */}
       {userData?.plan === 'free' && (
-        <div className="card mb-6 flex items-center justify-between gap-4 bg-gradient-to-r from-brand-50 to-violet-50 border-brand-200">
+        <div className="glass p-5 flex items-center justify-between gap-4 bg-gradient-to-r from-brand-50/80 to-violet-50/80 border-brand-200/30">
           <div className="flex items-center gap-3">
-            <Zap size={18} className="text-brand-500" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-violet-600 flex items-center justify-center shadow-md shadow-brand-500/20">
+              <Zap size={16} className="text-white" />
+            </div>
             <div>
-              <p className="text-sm font-medium text-slate-900">
+              <p className="text-sm font-semibold text-slate-900">
                 {queriesUsed ?? 0}/{queryLimit} free queries used today
               </p>
-              <div className="mt-1.5 w-48 h-1.5 bg-white/70 rounded-full overflow-hidden border border-brand-200">
+              <div className="mt-1.5 w-48 h-2 bg-white/60 rounded-full overflow-hidden backdrop-blur-sm">
                 <div
-                  className={cn('h-full rounded-full transition-all', pct > 80 ? 'bg-amber-400' : 'bg-brand-400')}
+                  className={cn('h-full rounded-full transition-all duration-500', pct > 80 ? 'bg-gradient-to-r from-amber-400 to-orange-500' : 'bg-gradient-to-r from-brand-400 to-violet-500')}
                   style={{ width: `${pct}%` }}
                 />
               </div>
             </div>
           </div>
           <Link href="/pricing" className="btn-primary text-xs py-2 whitespace-nowrap">
-            Upgrade to Pro — €8/mo
+            Upgrade to Pro
           </Link>
         </div>
       )}
 
-      {/* Quick actions */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+      {/* Quick actions — floating gradient buttons */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {QUICK_ACTIONS.map(action => (
           <Link
             key={action.href}
             href={action.href}
             className={cn(
-              'flex flex-col items-center gap-2.5 p-4 rounded-xl transition-all text-center group',
-              action.color,
+              'group flex flex-col items-center gap-3 p-5 rounded-2xl transition-all duration-300',
+              'bg-white/50 backdrop-blur-sm border border-white/30',
+              'hover:-translate-y-1 hover:shadow-float',
+              `hover:${action.glow}`,
             )}
           >
-            <action.icon size={22} />
-            <span className="text-xs font-semibold">{action.label}</span>
-            <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className={cn(
+              'w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center',
+              'shadow-lg transition-transform duration-300 group-hover:scale-110',
+              action.gradient, action.glow,
+            )}>
+              <action.icon size={20} className="text-white" />
+            </div>
+            <span className="text-xs font-bold text-slate-700 group-hover:text-slate-900">{action.label}</span>
+            <ArrowRight size={12} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-all duration-200 transform group-hover:translate-x-0.5" />
           </Link>
         ))}
       </div>
 
       {/* Stats */}
       {stats && (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard icon={BookOpen} label="Essays Analyzed" value={String(stats.essays_analyzed)} color="brand" />
-          <StatCard icon={Brain} label="Flashcard Decks" value={String(stats.flashcard_decks)} color="emerald" />
-          <StatCard icon={Mic} label="Practice Sessions" value={String(stats.practice_sessions)} color="amber" />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard icon={BookOpen} label="Essays Analyzed" value={String(stats.essays_analyzed)} gradient="from-brand-500 to-blue-600" />
+          <StatCard icon={Brain} label="Flashcard Decks" value={String(stats.flashcard_decks)} gradient="from-emerald-500 to-teal-600" />
+          <StatCard icon={Mic} label="Practice Sessions" value={String(stats.practice_sessions)} gradient="from-amber-500 to-orange-600" />
           <StatCard
             icon={TrendingUp}
             label="Quiz Average"
             value={stats.quiz_avg_score !== null ? `${Math.round(stats.quiz_avg_score)}%` : '—'}
-            color="violet"
+            gradient="from-violet-500 to-purple-600"
           />
         </div>
       )}
 
       {/* Getting started guide */}
-      <div className="card">
-        <h2 className="font-semibold text-slate-900 mb-4">Getting started</h2>
-        <div className="space-y-3">
+      <div className="glass p-6">
+        <h2 className="font-bold text-slate-900 mb-4 text-lg">Getting started</h2>
+        <div className="space-y-2">
           {[
             { step: 1, label: 'Paste an essay for instant rubric-aligned feedback', href: '/essays/analyze', done: (stats?.essays_analyzed ?? 0) > 0 },
             { step: 2, label: 'Generate flashcards for your next topic', href: '/flashcards',       done: (stats?.flashcard_decks ?? 0) > 0 },
@@ -116,18 +126,20 @@ export default function DashboardPage() {
             <Link
               key={item.step}
               href={item.href}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-muted transition-all"
+              className="flex items-center gap-3 p-3.5 rounded-xl hover:bg-white/50 transition-all duration-200 group"
             >
               <div className={cn(
-                'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0',
-                item.done ? 'bg-emerald-100 text-emerald-600' : 'bg-brand-100 text-brand-600',
+                'w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 transition-all',
+                item.done
+                  ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-sm shadow-emerald-500/20'
+                  : 'bg-gradient-to-br from-brand-400 to-brand-600 text-white shadow-sm shadow-brand-500/20',
               )}>
                 {item.done ? '✓' : item.step}
               </div>
-              <span className={cn('text-sm', item.done ? 'text-slate-400 line-through' : 'text-slate-700')}>
+              <span className={cn('text-sm font-medium', item.done ? 'text-slate-400 line-through' : 'text-slate-700')}>
                 {item.label}
               </span>
-              <ArrowRight size={14} className="ml-auto text-slate-300" />
+              <ArrowRight size={14} className="ml-auto text-slate-300 opacity-0 group-hover:opacity-100 transition-all" />
             </Link>
           ))}
         </div>
@@ -136,22 +148,20 @@ export default function DashboardPage() {
   )
 }
 
-function StatCard({ icon: Icon, label, value, color }: {
-  icon: React.ElementType; label: string; value: string; color: string
+function StatCard({ icon: Icon, label, value, gradient }: {
+  icon: React.ElementType; label: string; value: string; gradient: string
 }) {
-  const colorMap: Record<string, string> = {
-    brand: 'bg-brand-50 text-brand-600',
-    emerald: 'bg-emerald-50 text-emerald-600',
-    amber: 'bg-amber-50 text-amber-600',
-    violet: 'bg-violet-50 text-violet-600',
-  }
   return (
-    <div className="card">
-      <div className={cn('inline-flex p-2 rounded-lg mb-3', colorMap[color])}>
-        <Icon size={16} />
+    <div className="glass p-5 group hover:-translate-y-0.5 transition-all duration-300">
+      <div className={cn(
+        'inline-flex p-2.5 rounded-xl bg-gradient-to-br mb-3',
+        'shadow-md transition-transform duration-300 group-hover:scale-105',
+        gradient,
+      )}>
+        <Icon size={16} className="text-white" />
       </div>
       <div className="text-2xl font-bold text-slate-900">{value}</div>
-      <div className="text-xs text-slate-500 mt-0.5">{label}</div>
+      <div className="text-xs font-medium text-slate-500 mt-0.5">{label}</div>
     </div>
   )
 }
