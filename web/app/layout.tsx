@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: { default: 'IB Companion', template: '%s | IB Companion' },
   description: 'AI-powered study platform for International Baccalaureate students.',
   keywords: ['IB', 'International Baccalaureate', 'TOK', 'Extended Essay', 'IA', 'study', 'AI tutor'],
+  icons: { icon: '/icon.svg' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
