@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
   BookOpen, MessageSquare, Brain, Mic, FlaskConical,
-  TrendingUp, Zap, ArrowRight, Clock
+  TrendingUp, ArrowRight
 } from 'lucide-react'
 import { user as userApi } from '@/lib/api'
 import type { User, UserStats } from '@/lib/types'
-import { cn, formatDate, scoreColor } from '@/lib/utils'
+import { cn, scoreColor } from '@/lib/utils'
 
 const QUICK_ACTIONS = [
   { href: '/essays/analyze', label: 'Analyze Essay',   icon: BookOpen,    gradient: 'from-brand-500 to-blue-600',    glow: 'shadow-brand-500/20' },
@@ -28,15 +28,6 @@ export default function DashboardPage() {
       .catch(() => {})
   }, [])
 
-  const queriesUsed = userData
-    ? userData.plan === 'pro'
-      ? null
-      : userData.queries_today
-    : null
-
-  const queryLimit = userData?.daily_limit ?? 10
-  const pct = queriesUsed !== null ? Math.min((queriesUsed / queryLimit) * 100, 100) : 0
-
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-8 animate-fade-in">
       {/* Header */}
@@ -46,28 +37,6 @@ export default function DashboardPage() {
         </h1>
         <p className="text-slate-500 mt-1">What would you like to work on today?</p>
       </div>
-
-      {/* Plan banner */}
-      {userData?.plan === 'free' && (
-        <div className="glass p-5 flex items-center gap-4 bg-gradient-to-r from-brand-50/80 to-violet-50/80 border-brand-200/30">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-violet-600 flex items-center justify-center shadow-md shadow-brand-500/20">
-              <Zap size={16} className="text-white" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-slate-900">
-                {queriesUsed ?? 0}/{queryLimit} free queries used today
-              </p>
-              <div className="mt-1.5 w-48 h-2 bg-white/60 rounded-full overflow-hidden backdrop-blur-sm">
-                <div
-                  className={cn('h-full rounded-full transition-all duration-500', pct > 80 ? 'bg-gradient-to-r from-amber-400 to-orange-500' : 'bg-gradient-to-r from-brand-400 to-violet-500')}
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Quick actions — floating gradient buttons */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
