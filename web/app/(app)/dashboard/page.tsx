@@ -42,7 +42,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900">
-          {userData ? `Hey, ${userData.name.split(' ')[0]} 👋` : 'Dashboard'}
+          {userData ? `Hey, ${userData.name.split(' ')[0]}` : 'Dashboard'}
         </h1>
         <p className="text-slate-500 mt-1">What would you like to work on today?</p>
       </div>
