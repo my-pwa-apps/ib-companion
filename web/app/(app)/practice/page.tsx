@@ -79,7 +79,27 @@ function wpmLabel(wpm: number): string {
 
 // ─── Speech Recognition Hook ─────────────────────────────────────────────────
 
-type SpeechRecognitionInstance = InstanceType<typeof window.webkitSpeechRecognition> | null
+interface SpeechRecognitionEvent {
+  resultIndex: number
+  results: { length: number; [index: number]: { isFinal: boolean; [index: number]: { transcript: string } } }
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string
+}
+
+interface SpeechRecognitionAPI {
+  continuous: boolean
+  interimResults: boolean
+  lang: string
+  onresult: ((event: SpeechRecognitionEvent) => void) | null
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null
+  onend: (() => void) | null
+  start(): void
+  stop(): void
+}
+
+type SpeechRecognitionInstance = SpeechRecognitionAPI | null
 
 function useSpeechRecognition(onResult: (transcript: string) => void) {
   const [listening, setListening] = useState(false)
@@ -87,11 +107,12 @@ function useSpeechRecognition(onResult: (transcript: string) => void) {
   const recognitionRef = useRef<SpeechRecognitionInstance>(null)
 
   useEffect(() => {
-    const SpeechRecognition = (window as unknown as { SpeechRecognition?: typeof window.webkitSpeechRecognition; webkitSpeechRecognition?: typeof window.webkitSpeechRecognition }).SpeechRecognition
-      ?? (window as unknown as { webkitSpeechRecognition?: typeof window.webkitSpeechRecognition }).webkitSpeechRecognition
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = window as any
+    const SpeechRecognition = w.SpeechRecognition ?? w.webkitSpeechRecognition
     if (SpeechRecognition) {
       setSupported(true)
-      const recognition = new SpeechRecognition()
+      const recognition = new SpeechRecognition() as SpeechRecognitionAPI
       recognition.continuous = true
       recognition.interimResults = true
       recognition.lang = 'en-US'
@@ -105,7 +126,7 @@ function useSpeechRecognition(onResult: (transcript: string) => void) {
 
     let finalTranscript = ''
 
-    recognition.onresult = (event: { resultIndex: number; results: { length: number; [index: number]: { isFinal: boolean; [index: number]: { transcript: string } } } }) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       let interim = ''
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i]!
@@ -118,7 +139,7 @@ function useSpeechRecognition(onResult: (transcript: string) => void) {
       onResult(finalTranscript + interim)
     }
 
-    recognition.onerror = (event: { error: string }) => {
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       if (event.error !== 'aborted') {
         toast.error(`Microphone error: ${event.error}`)
       }
