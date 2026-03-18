@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * IB Companion — Test seed script
  *

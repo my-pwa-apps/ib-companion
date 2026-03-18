@@ -106,12 +106,13 @@ essayRoutes.post('/', zValidator('json', analyzeSchema), async (c) => {
   }
 
   const feedbackStr = feedback ? JSON.stringify(feedback) : null
+  const wordCount = content.trim().split(/\s+/).length
   await c.env.DB.prepare(
-    `INSERT INTO essays (id, user_id, title, content, type, subject, feedback, analyzed_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO essays (id, user_id, title, content, type, subject, feedback, analyzed_at, word_count)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     id, user.sub, title ?? 'Untitled', content, type,
-    subject ?? null, feedbackStr, analyzedAt,
+    subject ?? null, feedbackStr, analyzedAt, wordCount,
   ).run()
 
   return c.json({

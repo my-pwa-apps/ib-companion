@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
-import { createToken, hashPassword, verifyPassword, nanoid, sha256 } from '../middleware/auth'
+import { createToken, hashPassword, verifyPassword, nanoid, sha256, checkAuthRateLimit } from '../middleware/auth'
 import type { Env } from '../types'
 
 export const authRoutes = new Hono<{ Bindings: Env }>()
@@ -9,7 +9,10 @@ export const authRoutes = new Hono<{ Bindings: Env }>()
 const registerSchema = z.object({
   email: z.string().email().max(255),
   name: z.string().min(1).max(100),
-  password: z.string().min(8).max(128),
+  password: z.string().min(8).max(128)
+    .regex(/[a-z]/, 'Password must contain a lowercase letter')
+    .regex(/[A-Z]/, 'Password must contain an uppercase letter')
+    .regex(/[0-9]/, 'Password must contain a number'),
 })
 
 const loginSchema = z.object({
@@ -19,6 +22,12 @@ const loginSchema = z.object({
 
 // POST /api/auth/register
 authRoutes.post('/register', zValidator('json', registerSchema), async (c) => {
+  const ip = c.req.header('cf-connecting-ip') ?? c.req.header('x-forwarded-for') ?? 'unknown'
+  const { allowed } = await checkAuthRateLimit(c.env.KV, `reg:${ip}`)
+  if (!allowed) {
+    return c.json({ success: false, error: 'Too many attempts. Please try again later.', code: 'AUTH_RATE_LIMIT' }, 429)
+  }
+
   const { email, name, password } = c.req.valid('json')
 
   const existing = await c.env.DB.prepare(
@@ -61,6 +70,12 @@ authRoutes.post('/register', zValidator('json', registerSchema), async (c) => {
 
 // POST /api/auth/login
 authRoutes.post('/login', zValidator('json', loginSchema), async (c) => {
+  const ip = c.req.header('cf-connecting-ip') ?? c.req.header('x-forwarded-for') ?? 'unknown'
+  const { allowed } = await checkAuthRateLimit(c.env.KV, `login:${ip}`)
+  if (!allowed) {
+    return c.json({ success: false, error: 'Too many login attempts. Please try again later.', code: 'AUTH_RATE_LIMIT' }, 429)
+  }
+
   const { email, password } = c.req.valid('json')
 
   const user = await c.env.DB.prepare(

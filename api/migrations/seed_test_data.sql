@@ -1,8 +1,8 @@
 -- IB Companion — Test / Seed Data
 -- Apply with: npm run db:seed  (local only, never run on production)
 --
--- Test accounts (password for all is: password123)
--- Password hash below = PBKDF2-SHA256(password123) with a fixed salt for reproducibility
+-- Test accounts (password for all is: TestPassword123!)
+-- Password hash below = PBKDF2-SHA256(TestPassword123!) with a fixed salt for reproducibility
 -- The app uses real PBKDF2 hashing; these hashes are pre-computed test fixtures.
 --
 -- Quicker option: just register via the UI at http://localhost:3000/register

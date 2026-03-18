@@ -93,9 +93,17 @@ export async function verifyPassword(password: string, stored: string): Promise<
 // ─── Nanoid-style id generator ────────────────────────────────────────────────
 
 const ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+const MASK = 63 // 2^6 - 1, smallest bitmask >= ALPHABET.length (62)
 export function nanoid(size = 21): string {
-  const bytes = crypto.getRandomValues(new Uint8Array(size))
-  return Array.from(bytes).map(b => ALPHABET[b % ALPHABET.length]!).join('')
+  let id = ''
+  while (id.length < size) {
+    const bytes = crypto.getRandomValues(new Uint8Array(size - id.length))
+    for (const b of bytes) {
+      const idx = b & MASK
+      if (idx < ALPHABET.length) id += ALPHABET[idx]
+    }
+  }
+  return id
 }
 
 // ─── JWT helpers ─────────────────────────────────────────────────────────────
@@ -126,8 +134,43 @@ export const requireAuth: MiddlewareHandler<AuthEnv> = async (c, next) => {
   if (!payload) {
     return c.json({ success: false, error: 'Invalid or expired token', code: 'INVALID_TOKEN' }, 401)
   }
+
+  // Verify session has not been revoked (logout)
+  const tokenHash = await sha256(token)
+  const session = await c.env.DB.prepare(
+    'SELECT id FROM sessions WHERE token_hash = ? AND expires_at > ?'
+  ).bind(tokenHash, new Date().toISOString()).first()
+  if (!session) {
+    return c.json({ success: false, error: 'Session expired or revoked', code: 'SESSION_REVOKED' }, 401)
+  }
+
+  // Read current plan from DB to avoid stale JWT claims
+  const dbUser = await c.env.DB.prepare(
+    'SELECT plan FROM users WHERE id = ?'
+  ).bind(payload.sub).first<{ plan: 'free' | 'pro' }>()
+  if (dbUser) {
+    payload.plan = dbUser.plan
+  }
+
   c.set('user', payload)
   await next()
+}
+
+// ─── Auth rate limit helper (brute-force protection) ──────────────────────────
+
+export async function checkAuthRateLimit(
+  kv: KVNamespace,
+  ip: string,
+  maxAttempts = 10,
+  windowSeconds = 900, // 15 minutes
+): Promise<{ allowed: boolean; remaining: number }> {
+  const key = `auth_rl:${ip}`
+  const current = parseInt(await kv.get(key) ?? '0')
+  if (current >= maxAttempts) {
+    return { allowed: false, remaining: 0 }
+  }
+  await kv.put(key, String(current + 1), { expirationTtl: windowSeconds })
+  return { allowed: true, remaining: maxAttempts - current - 1 }
 }
 
 // ─── Rate limit helper ────────────────────────────────────────────────────────

@@ -77,15 +77,15 @@ export default function FlashcardsPage() {
           <form onSubmit={handleGenerate} className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="label">Subject</label>
-                <select className="input" value={subject} onChange={e => setSubject(e.target.value)} required>
+                <label className="label" htmlFor="fc-subject">Subject</label>
+                <select id="fc-subject" className="input" value={subject} onChange={e => setSubject(e.target.value)} required>
                   <option value="">Select subject…</option>
                   {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
               <div>
-                <label className="label">Cards to generate</label>
-                <select className="input" value={cardCount} onChange={e => setCardCount(Number(e.target.value))}>
+                <label className="label" htmlFor="fc-count">Cards to generate</label>
+                <select id="fc-count" className="input" value={cardCount} onChange={e => setCardCount(Number(e.target.value))}>
                   {[5, 10, 15, 20, 25, 30].map(n => <option key={n} value={n}>{n} cards</option>)}
                 </select>
               </div>
@@ -127,6 +127,7 @@ export default function FlashcardsPage() {
                 <button
                   onClick={() => handleDelete(deck.id)}
                   className="btn-ghost p-1.5 text-slate-300 hover:text-red-500"
+                  aria-label="Delete deck"
                 >
                   <Trash2 size={14} />
                 </button>

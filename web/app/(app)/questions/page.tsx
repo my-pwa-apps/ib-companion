@@ -48,15 +48,15 @@ export default function QuestionsPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="label">Subject (optional)</label>
-                <select className="input" value={subject} onChange={e => setSubject(e.target.value)}>
+                <label className="label" htmlFor="q-subject">Subject (optional)</label>
+                <select id="q-subject" className="input" value={subject} onChange={e => setSubject(e.target.value)}>
                   <option value="">Any subject</option>
                   {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
               <div>
-                <label className="label">Level (optional)</label>
-                <select className="input" value={level} onChange={e => setLevel(e.target.value as 'SL' | 'HL' | '')}>
+                <label className="label" htmlFor="q-level">Level (optional)</label>
+                <select id="q-level" className="input" value={level} onChange={e => setLevel(e.target.value as 'SL' | 'HL' | '')}>
                   <option value="">SL / HL</option>
                   <option value="SL">Standard Level (SL)</option>
                   <option value="HL">Higher Level (HL)</option>

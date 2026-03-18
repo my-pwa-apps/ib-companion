@@ -60,7 +60,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </div>
             <span className="font-bold text-slate-900 text-lg">IB <span className="bg-gradient-to-r from-brand-600 to-purple-600 bg-clip-text text-transparent">Companion</span></span>
           </Link>
-          <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden btn-ghost p-1">
+          <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden btn-ghost p-1" aria-label="Close sidebar">
             <X size={18} />
           </button>
         </div>
@@ -113,7 +113,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile topbar */}
         <header className="h-16 bg-white/40 backdrop-blur-xl border-b border-white/20 flex items-center px-4 gap-3 lg:hidden">
-          <button onClick={() => setSidebarOpen(true)} className="btn-ghost p-1">
+          <button onClick={() => setSidebarOpen(true)} className="btn-ghost p-1" aria-label="Open sidebar">
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2">

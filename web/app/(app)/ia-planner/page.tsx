@@ -59,8 +59,8 @@ export default function IAPlannerPage() {
             <h2 className="font-semibold text-slate-900 mb-4">Generate Plan</h2>
             <form onSubmit={handleGenerate} className="space-y-4">
               <div>
-                <label className="label">Subject</label>
-                <select className="input" value={subject} onChange={e => setSubject(e.target.value)} required>
+                <label className="label" htmlFor="ia-subject">Subject</label>
+                <select id="ia-subject" className="input" value={subject} onChange={e => setSubject(e.target.value)} required>
                   <option value="">Select subject…</option>
                   {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -93,7 +93,7 @@ export default function IAPlannerPage() {
                       <p className="text-xs font-medium text-slate-700 truncate">{p.subject}</p>
                       <p className="text-xs text-slate-400 truncate">{p.topic}</p>
                     </div>
-                    <button onClick={() => handleDelete(p.id)} className="btn-ghost p-1 text-slate-300 hover:text-red-400 flex-shrink-0">
+                    <button onClick={() => handleDelete(p.id)} className="btn-ghost p-1 text-slate-300 hover:text-red-400 flex-shrink-0" aria-label="Delete plan">
                       <Trash2 size={12} />
                     </button>
                   </div>

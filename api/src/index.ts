@@ -26,7 +26,7 @@ app.use('*', cors({
       'https://ib-companion.pages.dev',
       'https://ibcompanion.app',
     ]
-    return allowed.includes(origin) ? origin : allowed[0]!
+    return allowed.includes(origin) ? origin : ''
   },
   allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization'],
@@ -36,7 +36,14 @@ app.use('*', cors({
 
 app.use('*', secureHeaders())
 app.use('*', logger())
-app.use('*', prettyJSON())
+
+// Only pretty-print JSON in development
+app.use('*', async (c, next) => {
+  if (c.env.ENVIRONMENT !== 'production') {
+    return prettyJSON()(c, next)
+  }
+  await next()
+})
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 

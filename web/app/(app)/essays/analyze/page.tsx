@@ -69,8 +69,9 @@ export default function AnalyzeEssayPage() {
           <form onSubmit={handleAnalyze} className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="label">Essay type</label>
+                <label className="label" htmlFor="essay-type">Essay type</label>
                 <select
+                  id="essay-type"
                   className="input"
                   value={type}
                   onChange={e => setType(e.target.value as EssayType)}
@@ -81,8 +82,9 @@ export default function AnalyzeEssayPage() {
                 </select>
               </div>
               <div>
-                <label className="label">Subject (optional)</label>
+                <label className="label" htmlFor="essay-subject">Subject (optional)</label>
                 <select
+                  id="essay-subject"
                   className="input"
                   value={subject}
                   onChange={e => setSubject(e.target.value)}

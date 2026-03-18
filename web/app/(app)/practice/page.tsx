@@ -106,8 +106,8 @@ export default function PracticePage() {
               </div>
             </div>
             <div>
-              <label className="label">Subject</label>
-              <select className="input" value={subject} onChange={e => setSubject(e.target.value)} required>
+              <label className="label" htmlFor="p-subject">Subject</label>
+              <select id="p-subject" className="input" value={subject} onChange={e => setSubject(e.target.value)} required>
                 <option value="">Select subject…</option>
                 {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
@@ -231,7 +231,7 @@ export default function PracticePage() {
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(e) } }}
             disabled={loading}
           />
-          <button type="submit" className="btn-primary px-4" disabled={loading || !input.trim()}>
+          <button type="submit" className="btn-primary px-4" disabled={loading || !input.trim()} aria-label="Send message">
             <Send size={16} />
           </button>
         </form>

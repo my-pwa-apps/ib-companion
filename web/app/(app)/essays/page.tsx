@@ -69,6 +69,7 @@ export default function EssaysPage() {
                 <button
                   onClick={() => handleDelete(essay.id)}
                   className="btn-ghost p-1.5 text-slate-300 hover:text-red-500"
+                  aria-label="Delete essay"
                 >
                   <Trash2 size={14} />
                 </button>

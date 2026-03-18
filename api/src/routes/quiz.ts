@@ -58,6 +58,11 @@ quizRoutes.post('/:id/submit', zValidator('json', submitSchema), async (c) => {
   if (!attempt) return c.json({ success: false, error: 'Quiz not found' }, 404)
 
   const questions = JSON.parse(attempt.questions) as Array<{ correct_index: number; explanation: string }>
+
+  if (answers.length !== questions.length) {
+    return c.json({ success: false, error: `Expected ${questions.length} answers, got ${answers.length}` }, 400)
+  }
+
   let score = 0
   const results = questions.map((q, i) => {
     const correct = q.correct_index === answers[i]
