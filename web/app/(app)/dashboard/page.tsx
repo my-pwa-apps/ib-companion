@@ -100,7 +100,7 @@ export default function DashboardPage() {
 
       {/* Stats */}
       {stats && (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard icon={BookOpen} label="Essays Analyzed" value={String(stats.essays_analyzed)} gradient="from-brand-500 to-blue-600" />
           <StatCard icon={Brain} label="Flashcard Decks" value={String(stats.flashcard_decks)} gradient="from-emerald-500 to-teal-600" />
           <StatCard icon={Mic} label="Practice Sessions" value={String(stats.practice_sessions)} gradient="from-amber-500 to-orange-600" />
