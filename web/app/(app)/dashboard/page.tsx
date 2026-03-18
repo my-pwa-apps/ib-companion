@@ -49,7 +49,7 @@ export default function DashboardPage() {
 
       {/* Plan banner */}
       {userData?.plan === 'free' && (
-        <div className="glass p-5 flex items-center justify-between gap-4 bg-gradient-to-r from-brand-50/80 to-violet-50/80 border-brand-200/30">
+        <div className="glass p-5 flex items-center gap-4 bg-gradient-to-r from-brand-50/80 to-violet-50/80 border-brand-200/30">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-violet-600 flex items-center justify-center shadow-md shadow-brand-500/20">
               <Zap size={16} className="text-white" />
@@ -66,9 +66,6 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-          <Link href="/pricing" className="btn-primary text-xs py-2 whitespace-nowrap">
-            Upgrade to Pro
-          </Link>
         </div>
       )}
 

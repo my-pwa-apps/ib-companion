@@ -5,10 +5,77 @@ import toast from 'react-hot-toast'
 import { practice as practiceApi } from '@/lib/api'
 import type { ChatMessage, AISessionFeedback, PracticeType } from '@/lib/types'
 import { SUBJECTS } from '@/lib/utils'
-import { Mic, MicOff, Send, Loader2, StopCircle, ChevronLeft, TrendingUp } from 'lucide-react'
+import { Mic, MicOff, Send, Loader2, StopCircle, ChevronLeft, TrendingUp, Clock, AlertTriangle, Gauge } from 'lucide-react'
 import { cn, scoreColor } from '@/lib/utils'
 
 type Stage = 'setup' | 'chat' | 'results'
+
+// ─── Speech Analytics ─────────────────────────────────────────────────────────
+
+const FILLER_WORDS = ['um', 'uh', 'uhh', 'umm', 'er', 'err', 'ah', 'ahh', 'like', 'you know', 'sort of', 'kind of', 'basically', 'actually', 'literally', 'right', 'so yeah']
+
+interface SpeechStats {
+  totalWords: number
+  durationMinutes: number
+  wordsPerMinute: number
+  fillerCount: number
+  fillerRate: number // per minute
+  topFillers: { word: string; count: number }[]
+}
+
+function analyzeSpeech(userMessages: ChatMessage[], sessionStartedAt: number): SpeechStats {
+  const allText = userMessages.map(m => m.content).join(' ')
+  const words = allText.trim().split(/\s+/).filter(Boolean)
+  const totalWords = words.length
+
+  const durationMs = Date.now() - sessionStartedAt
+  const durationMinutes = Math.max(durationMs / 60_000, 0.1) // min 6 seconds to avoid Infinity
+
+  const wordsPerMinute = Math.round(totalWords / durationMinutes)
+
+  // Count fillers
+  const lowerText = allText.toLowerCase()
+  const fillerCounts = new Map<string, number>()
+  let fillerCount = 0
+
+  for (const filler of FILLER_WORDS) {
+    // Match as whole words
+    const regex = new RegExp(`\\b${filler.replace(/ /g, '\\s+')}\\b`, 'gi')
+    const matches = lowerText.match(regex)
+    if (matches && matches.length > 0) {
+      fillerCounts.set(filler, matches.length)
+      fillerCount += matches.length
+    }
+  }
+
+  const topFillers = Array.from(fillerCounts.entries())
+    .map(([word, count]) => ({ word, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5)
+
+  return {
+    totalWords,
+    durationMinutes,
+    wordsPerMinute,
+    fillerCount,
+    fillerRate: Math.round((fillerCount / durationMinutes) * 10) / 10,
+    topFillers,
+  }
+}
+
+function wpmColor(wpm: number): string {
+  if (wpm >= 120 && wpm <= 160) return 'text-emerald-600'
+  if (wpm >= 100 && wpm <= 180) return 'text-amber-600'
+  return 'text-red-600'
+}
+
+function wpmLabel(wpm: number): string {
+  if (wpm < 100) return 'Too slow — try to speak more fluently'
+  if (wpm <= 130) return 'Measured pace — good for emphasis'
+  if (wpm <= 160) return 'Ideal conversational pace'
+  if (wpm <= 180) return 'Slightly fast — consider slowing down'
+  return 'Too fast — slow down for clarity'
+}
 
 // ─── Speech Recognition Hook ─────────────────────────────────────────────────
 
@@ -92,6 +159,8 @@ export default function PracticePage() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [feedback, setFeedback] = useState<AISessionFeedback | null>(null)
+  const [speechStats, setSpeechStats] = useState<SpeechStats | null>(null)
+  const [sessionStartedAt, setSessionStartedAt] = useState<number>(0)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const handleSpeechResult = useCallback((transcript: string) => {
@@ -111,6 +180,7 @@ export default function PracticePage() {
       const res = await practiceApi.start(type, subject)
       setSessionId(res.data.session_id)
       setMessages([res.data.message])
+      setSessionStartedAt(Date.now())
       setStage('chat')
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to start session')
@@ -139,6 +209,11 @@ export default function PracticePage() {
 
   async function handleEnd() {
     if (!sessionId) return
+    // Compute speech stats before ending
+    const userMsgs = messages.filter(m => m.role === 'user')
+    if (userMsgs.length > 0 && sessionStartedAt > 0) {
+      setSpeechStats(analyzeSpeech(userMsgs, sessionStartedAt))
+    }
     setLoading(true)
     try {
       const res = await practiceApi.end(sessionId)
@@ -204,7 +279,7 @@ export default function PracticePage() {
     return (
       <div className="p-6 max-w-2xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
-          <button onClick={() => { setStage('setup'); setMessages([]); setFeedback(null) }} className="btn-ghost">
+          <button onClick={() => { setStage('setup'); setMessages([]); setFeedback(null); setSpeechStats(null) }} className="btn-ghost">
             <ChevronLeft size={16} /> New session
           </button>
           <h1 className="font-bold text-slate-900">Session Feedback</h1>
@@ -232,6 +307,57 @@ export default function PracticePage() {
           </div>
           <p className="text-sm text-slate-600">{feedback.detailed_feedback}</p>
         </div>
+
+        {/* Speech Analytics */}
+        {speechStats && speechStats.totalWords > 0 && (
+          <div className="card mb-4">
+            <h3 className="font-semibold text-sm text-slate-900 mb-3 flex items-center gap-2">
+              <Gauge size={14} className="text-brand-500" /> Speech Analytics
+            </h3>
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="bg-surface-muted rounded-lg p-3 text-center">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <Clock size={12} className="text-slate-400" />
+                  <p className="text-xs text-slate-500">Duration</p>
+                </div>
+                <p className="text-lg font-bold text-slate-900">
+                  {Math.floor(speechStats.durationMinutes)}:{String(Math.round((speechStats.durationMinutes % 1) * 60)).padStart(2, '0')}
+                </p>
+              </div>
+              <div className="bg-surface-muted rounded-lg p-3 text-center">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <Gauge size={12} className="text-slate-400" />
+                  <p className="text-xs text-slate-500">Pace</p>
+                </div>
+                <p className={cn('text-lg font-bold', wpmColor(speechStats.wordsPerMinute))}>
+                  {speechStats.wordsPerMinute} <span className="text-xs font-normal text-slate-400">wpm</span>
+                </p>
+              </div>
+              <div className="bg-surface-muted rounded-lg p-3 text-center">
+                <div className="flex items-center justify-center gap-1 mb-1">
+                  <AlertTriangle size={12} className="text-slate-400" />
+                  <p className="text-xs text-slate-500">Fillers</p>
+                </div>
+                <p className={cn('text-lg font-bold', speechStats.fillerRate > 5 ? 'text-red-600' : speechStats.fillerRate > 2 ? 'text-amber-600' : 'text-emerald-600')}>
+                  {speechStats.fillerCount}
+                </p>
+              </div>
+            </div>
+            <p className="text-xs text-slate-500 mb-2">
+              {wpmLabel(speechStats.wordsPerMinute)} &middot; {speechStats.totalWords} words total &middot; {speechStats.fillerRate} fillers/min
+            </p>
+            {speechStats.topFillers.length > 0 && (
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-slate-400">Top fillers:</span>
+                {speechStats.topFillers.map(f => (
+                  <span key={f.word} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs border border-amber-200">
+                    &ldquo;{f.word}&rdquo; <span className="font-bold">&times;{f.count}</span>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="card">

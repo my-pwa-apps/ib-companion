@@ -221,58 +221,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Pricing ───────────────────────────────────────────────────────────── */}
-      <section className="py-24 px-4 sm:px-6 relative">
-        <div className="orb w-[350px] h-[350px] bg-brand-300 -bottom-40 left-1/4 animate-float-slower" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl font-extrabold text-slate-900 mb-4">Simple pricing</h2>
-          <p className="text-lg text-slate-500 mb-14">Start free. Upgrade when you need more.</p>
-          <div className="grid sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
-            {/* Free */}
-            <div className="glass p-7 text-left hover:-translate-y-1 transition-all duration-300">
-              <div className="mb-5">
-                <span className="text-3xl font-extrabold text-slate-900">Free</span>
-                <p className="text-sm text-slate-500 mt-1 font-medium">10 AI queries per day</p>
-              </div>
-              <ul className="space-y-3 mb-7 text-sm text-slate-600">
-                {['Question helper', 'Essay feedback (1/day)', 'Flashcard generation', 'IA planner (1/day)'].map(f => (
-                  <li key={f} className="flex items-center gap-2.5">
-                    <CheckCircle size={15} className="text-emerald-500 flex-shrink-0" /> {f}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/register" className="btn-secondary w-full justify-center">Get started free</Link>
-            </div>
-            {/* Pro */}
-            <div className="relative glass p-7 text-left border-2 border-brand-400/50 hover:-translate-y-1 transition-all duration-300 shadow-glow">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                <span className="badge-blue text-xs font-bold px-4 py-1.5 shadow-sm">Most popular</span>
-              </div>
-              <div className="mb-5">
-                <span className="text-3xl font-extrabold text-slate-900">€8</span>
-                <span className="text-slate-400 text-sm font-medium">/month</span>
-                <p className="text-sm text-slate-500 mt-1 font-medium">Unlimited AI queries</p>
-              </div>
-              <ul className="space-y-3 mb-7 text-sm text-slate-600">
-                {[
-                  'Everything in Free',
-                  'Unlimited essay feedback',
-                  'Unlimited flashcards & quizzes',
-                  'Oral practice sessions',
-                  'Advanced IA planning',
-                  'Priority AI responses',
-                ].map(f => (
-                  <li key={f} className="flex items-center gap-2.5">
-                    <CheckCircle size={15} className="text-brand-500 flex-shrink-0" /> {f}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/register" className="btn-primary w-full justify-center">Start Pro trial</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── CTA ───────────────────────────────────────────────────────────────── */}
       <section className="py-24 px-4 sm:px-6 mesh-bg-dark relative overflow-hidden">
         <div className="orb w-[400px] h-[400px] bg-brand-500 opacity-20 -top-32 left-1/4 animate-float-slow" />

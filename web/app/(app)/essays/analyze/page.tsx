@@ -45,7 +45,7 @@ export default function AnalyzeEssayPage() {
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Analysis failed'
       if (msg.includes('RATE_LIMIT')) {
-        toast.error('Daily limit reached. Upgrade to Pro for unlimited analyses.')
+        toast.error('Daily limit reached. Try again tomorrow.')
       } else {
         toast.error(msg)
       }
